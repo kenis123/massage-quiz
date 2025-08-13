@@ -798,8 +798,8 @@
 
         async function sendToTelegram(data) {
             // Отримуємо токени з змінних середовища або використовуємо placeholder
-            const botToken = window.TELEGRAM_BOT_TOKEN || 'YOUR_BOT_TOKEN';
-            const chatId = window.TELEGRAM_CHAT_ID || 'YOUR_CHAT_ID';
+            const botToken = window.TELEGRAM_BOT_TOKEN || process.env.TELEGRAM_BOT_TOKEN || 'YOUR_BOT_TOKEN';
+            const chatId = window.TELEGRAM_CHAT_ID || process.env.TELEGRAM_CHAT_ID || 'YOUR_CHAT_ID';
             
             const message = `
 🆕 Новий лід з квізу масажу!
