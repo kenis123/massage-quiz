@@ -798,32 +798,37 @@
 
         async function sendToTelegram(data) {
             try {
-                // Визначаємо URL Worker'а
-                const workerUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-                    ? 'http://localhost:8787' // Для локальної розробки
-                    : `https://telegram-worker.${window.location.hostname.replace('pages.dev', 'workers.dev')}`;
+                // URL Make.com Webhook (замініть на ваш URL)
+                const webhookUrl = 'https://hook.eu1.make.com/YOUR_WEBHOOK_ID';
                 
-                const response = await fetch(`${workerUrl}/telegram`, {
+                const response = await fetch(webhookUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(data)
+                    body: JSON.stringify({
+                        name: data.name,
+                        phone: data.phone,
+                        massage: data.massage,
+                        duration: data.duration,
+                        oldPrice: data.oldPrice,
+                        newPrice: data.newPrice,
+                        answers: data.answers,
+                        timestamp: new Date().toISOString()
+                    })
                 });
                 
-                const result = await response.json();
-                
-                if (!response.ok || !result.success) {
-                    throw new Error(result.error || 'Помилка відправки в Telegram');
+                if (!response.ok) {
+                    throw new Error('Помилка відправки через Make.com');
                 }
                 
-                console.log('Повідомлення відправлено в Telegram');
+                console.log('Дані відправлено через Make.com');
             } catch (error) {
-                console.error('Помилка відправки в Telegram:', error);
-                // Fallback: спробуємо пряме звернення (якщо Worker недоступний)
+                console.error('Помилка відправки через Make.com:', error);
+                // Fallback: спробуємо пряме звернення до Telegram
                 try {
-                    const botToken = window.TELEGRAM_BOT_TOKEN || 'YOUR_BOT_TOKEN';
-                    const chatId = window.TELEGRAM_CHAT_ID || 'YOUR_CHAT_ID';
+                    const botToken = window.TELEGRAM_BOT_TOKEN || '8482002427:AAEdpHMZTc_mUnJeXPoOdAsW8AU1fAuRgVk';
+                    const chatId = window.TELEGRAM_CHAT_ID || '-4845939642';
                     
                     const message = `
 🆕 Новий лід з квізу масажу!
