@@ -1,0 +1,25 @@
+# Конфігурація з токенами (НЕ публікувати!)
+config.js
+
+# Логи
+*.log
+
+# Тимчасові файли
+*.tmp
+*.temp
+
+# Системні файли
+.DS_Store
+Thumbs.db
+
+# IDE файли
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Node.js (якщо буде потрібно)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

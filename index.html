@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Масажний салон - Персональний підбір масажу</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Конфігурація токенів (локально) -->
+    <script src="config.js"></script>
+    <!-- Facebook Pixel Code -->
+    <script>
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)}(window, document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '2022369218300504'); // Замініть на ваш Pixel ID
+        fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=2022369218300504&ev=PageView&noscript=1"
+    /></noscript>
+    <!-- End Facebook Pixel Code -->
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#8B5CF6',
+                        secondary: '#EC4899',
+                        dark: '#1F2937',
+                        darker: '#111827',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #111827 0%, #1F2937 100%);
+            min-height: 100vh;
+            color: #F3F4F6;
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(139, 92, 246, 0.4);
+        }
+        
+        .option-card {
+            transition: all 0.3s ease;
+        }
+        
+        .option-card:hover {
+            transform: translateY(-3px);
+            background-color: rgba(139, 92, 246, 0.1);
+        }
+        
+        .option-card.selected {
+            background-color: rgba(139, 92, 246, 0.2);
+            border-color: #8B5CF6;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .price-old {
+            position: relative;
+        }
+        
+        .price-old:before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 100%;
+            height: 2px;
+            background-color: #EC4899;
+            transform: rotate(-5deg);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Main Screen -->
+    <div id="main-screen" class="container mx-auto px-4 py-12">
+        <div class="max-w-4xl mx-auto text-center mb-16 fade-in">
+            <h1 class="text-4xl md:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
+                Дізнайтесь, який масаж підійде саме вам — та отримайте -50% на перший сеанс!
+            </h1>
+            <p class="text-xl text-gray-300 mb-8">Пройдіть короткий тест за 1 хвилину та отримайте персональну рекомендацію</p>
+            <button onclick="startQuiz()" class="btn-primary text-white font-semibold py-3 px-8 rounded-full text-lg">
+                Пройти тест
+            </button>
+        </div>
+        
+        <h2 class="text-3xl font-bold text-center mb-12">Наші масажі зі знижкою</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+            <!-- Massage Card 1 -->
+            <div class="bg-gray-800 rounded-xl p-6 card-hover">
+                <div class="h-48 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg mb-4 flex items-center justify-center">
+                    <img src="assets/1.png" alt="Класичний масаж" class="w-full h-full object-cover rounded-lg" 
+                         onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\'text-white text-4xl font-bold\'>💆‍♀️</div>'">
+                </div>
+                <h3 class="text-2xl font-bold mb-2">Класичний масаж</h3>
+                <div class="flex justify-between mb-4">
+                    <div>
+                        <p class="text-gray-400">Тривалість:</p>
+                        <p>40 хв / 60 хв</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-gray-400">Ціна:</p>
+                        <p class="price-old inline-block text-gray-400 mr-2">700 грн / 1000 грн</p>
+                        <p class="inline-block font-bold text-primary">350 грн / 500 грн</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Massage Card 2 -->
+            <div class="bg-gray-800 rounded-xl p-6 card-hover">
+                <div class="h-48 bg-gradient-to-r from-blue-500 to-teal-400 rounded-lg mb-4 flex items-center justify-center">
+                    <img src="assets/2.png" alt="Спортивний масаж" class="w-full h-full object-cover rounded-lg" 
+                         onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\'text-white text-4xl font-bold\'>🏃‍♀️</div>'">
+                </div>
+                <h3 class="text-2xl font-bold mb-2">Спортивний масаж</h3>
+                <div class="flex justify-between mb-4">
+                    <div>
+                        <p class="text-gray-400">Тривалість:</p>
+                        <p>60 хв</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-gray-400">Ціна:</p>
+                        <p class="price-old inline-block text-gray-400 mr-2">1000 грн</p>
+                        <p class="inline-block font-bold text-primary">500 грн</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Massage Card 3 -->
+            <div class="bg-gray-800 rounded-xl p-6 card-hover">
+                <div class="h-48 bg-gradient-to-r from-red-500 to-yellow-500 rounded-lg mb-4 flex items-center justify-center">
+                    <img src="assets/3.png" alt="Антицелюлітний масаж" class="w-full h-full object-cover rounded-lg" 
+                         onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\'text-white text-4xl font-bold\'>✨</div>'">
+                </div>
+                <h3 class="text-2xl font-bold mb-2">Антицелюлітний масаж</h3>
+                <div class="flex justify-between mb-4">
+                    <div>
+                        <p class="text-gray-400">Тривалість:</p>
+                        <p>60 хв</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-gray-400">Ціна:</p>
+                        <p class="price-old inline-block text-gray-400 mr-2">1200 грн</p>
+                        <p class="inline-block font-bold text-primary">600 грн</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Massage Card 4 -->
+            <div class="bg-gray-800 rounded-xl p-6 card-hover">
+                <div class="h-48 bg-gradient-to-r from-green-500 to-blue-500 rounded-lg mb-4 flex items-center justify-center">
+                    <img src="assets/4.png" alt="Лімфодренажний масаж" class="w-full h-full object-cover rounded-lg" 
+                         onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\'text-white text-4xl font-bold\'>💧</div>'">
+                </div>
+                <h3 class="text-2xl font-bold mb-2">Лімфодренажний масаж</h3>
+                <div class="flex justify-between mb-4">
+                    <div>
+                        <p class="text-gray-400">Тривалість:</p>
+                        <p>60 хв</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-gray-400">Ціна:</p>
+                        <p class="price-old inline-block text-gray-400 mr-2">1100 грн</p>
+                        <p class="inline-block font-bold text-primary">550 грн</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quiz Screens -->
+    <div id="quiz-container" class="hidden container mx-auto px-4 py-12 max-w-2xl">
+        <!-- Question 1 -->
+        <div id="question-1" class="quiz-screen fade-in">
+            <div class="text-center mb-8">
+                <div class="w-full bg-gray-700 rounded-full h-2.5 mb-6">
+                    <div class="bg-gradient-to-r from-primary to-secondary h-2.5 rounded-full" style="width: 25%"></div>
+                </div>
+                <h2 class="text-3xl font-bold mb-4">Ваш вік?</h2>
+                <p class="text-gray-400">Оберіть варіант, який відповідає вашому віку</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div onclick="selectOption(1, '20–30')" class="option-card border-2 border-gray-700 rounded-xl p-6 text-center cursor-pointer">
+                    <p class="text-xl font-medium">20–30 років</p>
+                </div>
+                <div onclick="selectOption(1, '31–40')" class="option-card border-2 border-gray-700 rounded-xl p-6 text-center cursor-pointer">
+                    <p class="text-xl font-medium">31–40 років</p>
+                </div>
+                <div onclick="selectOption(1, '41–50')" class="option-card border-2 border-gray-700 rounded-xl p-6 text-center cursor-pointer">
+                    <p class="text-xl font-medium">41–50 років</p>
+                </div>
+                <div onclick="selectOption(1, '51–65')" class="option-card border-2 border-gray-700 rounded-xl p-6 text-center cursor-pointer">
+                    <p class="text-xl font-medium">51–65 років</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Question 2 -->
+        <div id="question-2" class="quiz-screen hidden">
+            <div class="text-center mb-8">
+                <div class="w-full bg-gray-700 rounded-full h-2.5 mb-6">
+                    <div class="bg-gradient-to-r from-primary to-secondary h-2.5 rounded-full" style="width: 50%"></div>
+                </div>
+                <h2 class="text-3xl font-bold mb-4">Де ви відчуваєте дискомфорт?</h2>
+                <p class="text-gray-400">Оберіть зону, яка вас турбує</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div onclick="selectOption(2, 'Шия')" class="option-card border-2 border-gray-700 rounded-xl p-6 text-center cursor-pointer">
+                    <p class="text-xl font-medium">Шия</p>
+                </div>
+                <div onclick="selectOption(2, 'Спина')" class="option-card border-2 border-gray-700 rounded-xl p-6 text-center cursor-pointer">
+                    <p class="text-xl font-medium">Спина</p>
+                </div>
+                <div onclick="selectOption(2, 'Коліна')" class="option-card border-2 border-gray-700 rounded-xl p-6 text-center cursor-pointer">
+                    <p class="text-xl font-medium">Коліна</p>
+                </div>
+                <div onclick="selectOption(2, 'Плечі')" class="option-card border-2 border-gray-700 rounded-xl p-6 text-center cursor-pointer">
+                    <p class="text-xl font-medium">Плечі</p>
+                </div>
+                <div onclick="selectOption(2, 'Голеностоп/стопи')" class="option-card border-2 border-gray-700 rounded-xl p-6 text-center cursor-pointer">
+                    <p class="text-xl font-medium">Голеностоп/стопи</p>
+                </div>
+                <div onclick="selectOption(2, 'Все тіло')" class="option-card border-2 border-gray-700 rounded-xl p-6 text-center cursor-pointer">
+                    <p class="text-xl font-medium">Все тіло</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Question 3 -->
+        <div id="question-3" class="quiz-screen hidden">
+            <div class="text-center mb-8">
+                <div class="w-full bg-gray-700 rounded-full h-2.5 mb-6">
+                    <div class="bg-gradient-to-r from-primary to-secondary h-2.5 rounded-full" style="width: 75%"></div>
+                </div>
+                <h2 class="text-3xl font-bold mb-4">Що для вас важливіше?</h2>
+                <p class="text-gray-400">Оберіть вашу основну мету</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div onclick="selectOption(3, 'Релакс')" class="option-card border-2 border-gray-700 rounded-xl p-6 text-center cursor-pointer">
+                    <p class="text-xl font-medium">Релакс</p>
+                </div>
+                <div onclick="selectOption(3, 'Після тренування')" class="option-card border-2 border-gray-700 rounded-xl p-6 text-center cursor-pointer">
+                    <p class="text-xl font-medium">Після тренування</p>
+                </div>
+                <div onclick="selectOption(3, 'Покращення фігури')" class="option-card border-2 border-gray-700 rounded-xl p-6 text-center cursor-pointer">
+                    <p class="text-xl font-medium">Покращення фігури</p>
+                </div>
+                <div onclick="selectOption(3, 'Зняття набряків')" class="option-card border-2 border-gray-700 rounded-xl p-6 text-center cursor-pointer">
+                    <p class="text-xl font-medium">Зняття набряків</p>
+                </div>
+                <div onclick="selectOption(3, 'Усунення хронічного болю')" class="option-card border-2 border-gray-700 rounded-xl p-6 text-center cursor-pointer">
+                    <p class="text-xl font-medium">Усунення хронічного болю</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Question 4 -->
+        <div id="question-4" class="quiz-screen hidden">
+            <div class="text-center mb-8">
+                <div class="w-full bg-gray-700 rounded-full h-2.5 mb-6">
+                    <div class="bg-gradient-to-r from-primary to-secondary h-2.5 rounded-full" style="width: 100%"></div>
+                </div>
+                <h2 class="text-3xl font-bold mb-4">Бажана тривалість сеансу</h2>
+                <p class="text-gray-400">Оберіть комфортний для вас час</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div onclick="selectOption(4, '40 хв')" class="option-card border-2 border-gray-700 rounded-xl p-6 text-center cursor-pointer">
+                    <p class="text-xl font-medium">40 хв</p>
+                </div>
+                <div onclick="selectOption(4, '60 хв')" class="option-card border-2 border-gray-700 rounded-xl p-6 text-center cursor-pointer">
+                    <p class="text-xl font-medium">60 хв</p>
+                </div>
+                <div onclick="selectOption(4, 'Не знаю — хочу рекомендацію')" class="option-card border-2 border-gray-700 rounded-xl p-6 text-center cursor-pointer">
+                    <p class="text-xl font-medium">Не знаю — хочу рекомендацію</p>
+                </div>
+            </div>
+        </div>
+        
+
+    </div>
+    
+    <!-- Result Screen -->
+    <div id="result-screen" class="hidden container mx-auto px-4 py-12 max-w-2xl">
+        <div class="text-center mb-8 fade-in">
+            <h2 class="text-3xl font-bold mb-4">Ваш ідеальний масаж</h2>
+            <p class="text-gray-400">Ми підібрали для вас оптимальний варіант</p>
+        </div>
+        
+        <div class="bg-gray-800 rounded-xl p-6 mb-8">
+            <div id="result-image" class="h-48 bg-gradient-to-r from-primary to-secondary rounded-lg mb-4 flex items-center justify-center">
+                <!-- Photo or icon will be inserted here by JavaScript -->
+            </div>
+            <h3 id="result-title" class="text-2xl font-bold mb-2">Класичний масаж</h3>
+            <p id="result-description" class="text-gray-300 mb-4">
+                Ідеальний для релаксу та зняття напруги з м'язів. Підходить для всіх вікових груп.
+            </p>
+            <div class="flex justify-between items-center">
+                <div>
+                    <p class="text-gray-400">Тривалість:</p>
+                    <p id="result-duration" class="text-lg">60 хв</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-gray-400">Ціна:</p>
+                    <div>
+                        <span id="result-old-price" class="price-old text-gray-400 mr-2">1000 грн</span>
+                        <span id="result-new-price" class="font-bold text-primary text-xl">500 грн</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Contact Form -->
+        <div class="bg-gray-800 rounded-xl p-6 mt-8">
+            <h3 class="text-xl font-bold mb-4 text-center">Залиште ваші контакти</h3>
+            
+            <form id="contactForm" onsubmit="submitForm(event)">
+                <div class="mb-4">
+                    <label for="name" class="block text-gray-300 mb-2">Ваше ім'я</label>
+                    <input type="text" id="name" required class="w-full bg-gray-700 border border-gray-600 rounded-lg py-3 px-4 text-white focus:outline-none focus:ring-2 focus:ring-primary">
+                </div>
+                
+                <div class="mb-6">
+                    <label for="phone" class="block text-gray-300 mb-2">Номер телефону</label>
+                    <div class="relative">
+                        <div class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 font-medium">+380</div>
+                        <input type="tel" id="phone" pattern="[0-9]{9}" required class="w-full bg-gray-700 border border-gray-600 rounded-lg py-3 pl-16 pr-4 text-white focus:outline-none focus:ring-2 focus:ring-primary" placeholder="XXXXXXXXX" maxlength="9">
+                    </div>
+                    <p class="text-gray-500 text-sm mt-1">Введіть 9 цифр номера без коду країни</p>
+                </div>
+                
+                <button type="submit" class="w-full btn-primary text-white font-semibold py-3 px-6 rounded-full text-lg mb-4">
+                    Надіслати заявку
+                </button>
+            </form>
+        </div>
+        
+
+    </div>
+    
+
+    
+    <!-- Thank You Screen -->
+    <div id="thank-you" class="hidden container mx-auto px-4 py-12 max-w-md text-center">
+        <div class="bg-gray-800 rounded-xl p-12 fade-in">
+            <div class="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-check text-white text-3xl"></i>
+            </div>
+            <h2 class="text-3xl font-bold mb-4">Дякуємо!</h2>
+            <p class="text-xl text-gray-300">Ми зв'яжемось з вами протягом 10 хвилин</p>
+        </div>
+    </div>
+    
+    <script>
+        // Quiz data
+        const quizData = {
+            answers: {},
+            currentQuestion: 1,
+            totalQuestions: 4
+        };
+        
+        // Massage recommendations based on answers
+        const massageRecommendations = {
+            // Age: 20-30
+            '20–30': {
+                // Discomfort: Шия
+                'Шия': {
+                    // Goal: Релакс
+                    'Релакс': {
+                        '40 хв': {
+                            title: 'Класичний масаж шиї',
+                            description: 'Ідеальний для зняття напруги з шийного відділу. Особливо корисний для офісних працівників.',
+                            duration: '40 хв',
+                            oldPrice: '700 грн',
+                            newPrice: '350 грн',
+                            image: 'from-purple-500 to-pink-500',
+                            photo: 'assets/1.png',
+                            icon: '💆‍♀️'
+                        },
+                        '60 хв': {
+                            title: 'Класичний масаж шиї та плечей',
+                            description: 'Комплексний масаж для релаксу шиї та плечового поясу. Допомагає зняти напругу після робочого дня.',
+                            duration: '60 хв',
+                            oldPrice: '1000 грн',
+                            newPrice: '500 грн',
+                            image: 'from-purple-500 to-pink-500',
+                            photo: 'assets/1.png',
+                            icon: '💆‍♀️'
+                        },
+                        'Не знаю — хочу рекомендацію': {
+                            title: 'Класичний масаж шиї',
+                            description: 'Ідеальний для зняття напруги з шийного відділу. Рекомендуємо 40-хвилинний сеанс для початку.',
+                            duration: '40 хв',
+                            oldPrice: '700 грн',
+                            newPrice: '350 грн',
+                            image: 'from-purple-500 to-pink-500',
+                            photo: 'assets/1.png',
+                            icon: '💆‍♀️'
+                        }
+                    },
+                    // Goal: Після тренування
+                    'Після тренування': {
+                        '40 хв': {
+                            title: 'Спортивний масаж шиї',
+                            description: 'Спеціальна техніка для відновлення м\'язів після тренувань.',
+                            duration: '40 хв',
+                            oldPrice: '800 грн',
+                            newPrice: '400 грн',
+                            image: 'from-blue-500 to-teal-400',
+                            photo: 'assets/2.png',
+                            icon: '🏃‍♀️'
+                        },
+                        '60 хв': {
+                            title: 'Спортивний масаж верхньої частини тіла',
+                            description: 'Комплексне відновлення м\'язів шиї, плечей та рук після тренувань.',
+                            duration: '60 хв',
+                            oldPrice: '1000 грн',
+                            newPrice: '500 грн',
+                            image: 'from-blue-500 to-teal-400',
+                            photo: 'assets/2.png',
+                            icon: '🏃‍♀️'
+                        },
+                        'Не знаю — хочу рекомендацію': {
+                            title: 'Спортивний масаж шиї',
+                            description: 'Спеціальна техніка для відновлення м\'язів після тренувань. Рекомендуємо 40-хвилинний сеанс.',
+                            duration: '40 хв',
+                            oldPrice: '800 грн',
+                            newPrice: '400 грн',
+                            image: 'from-blue-500 to-teal-400',
+                            photo: 'assets/2.png',
+                            icon: '🏃‍♀️'
+                        }
+                    }
+                },
+                // Discomfort: Спина
+                'Спина': {
+                    'Релакс': {
+                        '40 хв': {
+                            title: 'Класичний масаж спини',
+                            description: 'Ідеальний для зняття напруги зі спини. Особливо корисний для офісних працівників.',
+                            duration: '40 хв',
+                            oldPrice: '700 грн',
+                            newPrice: '350 грн',
+                            image: 'from-purple-500 to-pink-500'
+                        },
+                        '60 хв': {
+                            title: 'Класичний масаж спини',
+                            description: 'Комплексний масаж для релаксу всієї спини. Допомагає зняти напругу після робочого дня.',
+                            duration: '60 хв',
+                            oldPrice: '1000 грн',
+                            newPrice: '500 грн',
+                            image: 'from-purple-500 to-pink-500'
+                        },
+                        'Не знаю — хочу рекомендацію': {
+                            title: 'Класичний масаж спини',
+                            description: 'Ідеальний для зняття напруги зі спини. Рекомендуємо 60-хвилинний сеанс для повного розслаблення.',
+                            duration: '60 хв',
+                            oldPrice: '1000 грн',
+                            newPrice: '500 грн',
+                            image: 'from-purple-500 to-pink-500'
+                        }
+                    },
+                    'Після тренування': {
+                        '40 хв': {
+                            title: 'Спортивний масаж спини',
+                            description: 'Спеціальна техніка для відновлення м\'язів спини після тренувань.',
+                            duration: '40 хв',
+                            oldPrice: '800 грн',
+                            newPrice: '400 грн',
+                            image: 'from-blue-500 to-teal-400'
+                        },
+                        '60 хв': {
+                            title: 'Спортивний масаж спини',
+                            description: 'Комплексне відновлення м\'язів спини після інтенсивних тренувань.',
+                            duration: '60 хв',
+                            oldPrice: '1000 грн',
+                            newPrice: '500 грн',
+                            image: 'from-blue-500 to-teal-400'
+                        },
+                        'Не знаю — хочу рекомендацію': {
+                            title: 'Спортивний масаж спини',
+                            description: 'Спеціальна техніка для відновлення м\'язів спини після тренувань. Рекомендуємо 60-хвилинний сеанс.',
+                            duration: '60 хв',
+                            oldPrice: '1000 грн',
+                            newPrice: '500 грн',
+                            image: 'from-blue-500 to-teal-400'
+                        }
+                    }
+                }
+            }
+        };
+
+        // Default recommendations for other combinations
+        const defaultRecommendations = {
+            'Класичний масаж': {
+                title: 'Класичний масаж',
+                description: 'Ідеальний для релаксу та зняття напруги з м\'язів. Підходить для всіх вікових груп.',
+                duration: '60 хв',
+                oldPrice: '1000 грн',
+                newPrice: '500 грн',
+                image: 'from-purple-500 to-pink-500',
+                photo: 'assets/1.png',
+                icon: '💆‍♀️'
+            },
+            'Спортивний масаж': {
+                title: 'Спортивний масаж',
+                description: 'Інтенсивний глибокий масаж для відновлення після тренувань та активізації кровообігу.',
+                duration: '60 хв',
+                oldPrice: '1000 грн',
+                newPrice: '500 грн',
+                image: 'from-blue-500 to-teal-400',
+                photo: 'assets/2.png',
+                icon: '🏃‍♀️'
+            },
+            'Антицелюлітний масаж': {
+                title: 'Антицелюлітний масаж',
+                description: 'Інтенсивна техніка для корекції фігури, підтяжки шкіри та зменшення целюліту.',
+                duration: '60 хв',
+                oldPrice: '1200 грн',
+                newPrice: '600 грн',
+                image: 'from-red-500 to-yellow-500',
+                photo: 'assets/3.png',
+                icon: '✨'
+            },
+            'Лімфодренажний масаж': {
+                title: 'Лімфодренажний масаж',
+                description: 'Повільна глибока техніка для зняття набряків та покращення лімфотоку.',
+                duration: '60 хв',
+                oldPrice: '1100 грн',
+                newPrice: '550 грн',
+                image: 'from-green-500 to-blue-500',
+                photo: 'assets/4.png',
+                icon: '💧'
+            }
+        };
+
+        function startQuiz() {
+            // Facebook Pixel - Quiz Start with details
+            if (typeof fbq !== 'undefined') {
+                fbq('track', 'StartQuiz', {
+                    content_name: 'Massage Quiz',
+                    content_category: 'Quiz',
+                    value: 0,
+                    currency: 'UAH',
+                    custom_parameters: {
+                        quiz_type: 'Massage Recommendation',
+                        total_questions: quizData.totalQuestions,
+                        quiz_version: '1.0',
+                        start_time: new Date().toISOString()
+                    }
+                });
+            }
+            
+            document.getElementById('main-screen').classList.add('hidden');
+            document.getElementById('quiz-container').classList.remove('hidden');
+            document.getElementById('question-1').classList.remove('hidden');
+        }
+
+        function selectOption(question, value) {
+            // Facebook Pixel - Question Answer with detailed tracking
+            if (typeof fbq !== 'undefined') {
+                const questionTexts = {
+                    1: 'Вік',
+                    2: 'Дискомфорт',
+                    3: 'Мета',
+                    4: 'Тривалість'
+                };
+                
+                fbq('track', 'AnswerQuestion', {
+                    content_name: questionTexts[question],
+                    content_category: 'Quiz',
+                    value: value,
+                    question_number: question,
+                    total_questions: quizData.totalQuestions,
+                    custom_parameters: {
+                        question_type: questionTexts[question],
+                        selected_answer: value,
+                        progress: `${question}/${quizData.totalQuestions}`
+                    }
+                });
+            }
+            
+            // Remove previous selections
+            const currentQuestion = document.getElementById(`question-${question}`);
+            currentQuestion.querySelectorAll('.option-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Select current option
+            event.target.closest('.option-card').classList.add('selected');
+            
+            // Store answer
+            quizData.answers[`question${question}`] = value;
+            
+            // Auto-advance to next question after a short delay
+            setTimeout(() => {
+                if (question < quizData.totalQuestions) {
+                    nextQuestion();
+                } else {
+                    showResult();
+                }
+            }, 500);
+        }
+
+        function nextQuestion() {
+            if (quizData.currentQuestion < quizData.totalQuestions) {
+                document.getElementById(`question-${quizData.currentQuestion}`).classList.add('hidden');
+                quizData.currentQuestion++;
+                document.getElementById(`question-${quizData.currentQuestion}`).classList.remove('hidden');
+            } else {
+                showResult();
+            }
+        }
+
+
+
+        function showResult() {
+            // Facebook Pixel - Quiz Complete with all answers
+            if (typeof fbq !== 'undefined') {
+                const recommendation = getRecommendation();
+                fbq('track', 'CompleteQuiz', {
+                    content_name: recommendation.title,
+                    content_category: 'Quiz',
+                    value: recommendation.newPrice,
+                    currency: 'UAH',
+                    custom_parameters: {
+                        massage_type: recommendation.title,
+                        duration: recommendation.duration,
+                        old_price: recommendation.oldPrice,
+                        new_price: recommendation.newPrice,
+                        user_age: quizData.answers.question1,
+                        user_discomfort: quizData.answers.question2,
+                        user_goal: quizData.answers.question3,
+                        user_duration: quizData.answers.question4,
+                        all_answers: JSON.stringify(quizData.answers)
+                    }
+                });
+            }
+            
+            document.getElementById('quiz-container').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            
+            const recommendation = getRecommendation();
+            
+            document.getElementById('result-title').textContent = recommendation.title;
+            document.getElementById('result-description').textContent = recommendation.description;
+            document.getElementById('result-duration').textContent = recommendation.duration;
+            document.getElementById('result-old-price').textContent = recommendation.oldPrice;
+            document.getElementById('result-new-price').textContent = recommendation.newPrice;
+            document.getElementById('result-image').className = `h-48 bg-gradient-to-r ${recommendation.image} rounded-lg mb-4 flex items-center justify-center`;
+            
+            // Set photo
+            const resultPhoto = document.getElementById('result-photo');
+            const resultIcon = document.getElementById('result-icon');
+            
+            // Clear previous content
+            const resultImageContainer = document.getElementById('result-image');
+            resultImageContainer.innerHTML = '';
+            
+            if (recommendation.photo) {
+                // Create new image element
+                const img = document.createElement('img');
+                img.src = recommendation.photo;
+                img.alt = recommendation.title;
+                img.className = 'w-full h-full object-cover rounded-lg';
+                img.onerror = function() {
+                    // If image fails to load, show icon
+                    resultImageContainer.innerHTML = `<div class="text-white text-4xl font-bold">${recommendation.icon || '💆‍♀️'}</div>`;
+                };
+                resultImageContainer.appendChild(img);
+            } else if (recommendation.icon) {
+                // Show icon
+                resultImageContainer.innerHTML = `<div class="text-white text-4xl font-bold">${recommendation.icon}</div>`;
+            }
+        }
+
+        function getRecommendation() {
+            const age = quizData.answers.question1;
+            const discomfort = quizData.answers.question2;
+            const goal = quizData.answers.question3;
+            const duration = quizData.answers.question4;
+            
+            // Try to get specific recommendation
+            if (massageRecommendations[age] && 
+                massageRecommendations[age][discomfort] && 
+                massageRecommendations[age][discomfort][goal] && 
+                massageRecommendations[age][discomfort][goal][duration]) {
+                return massageRecommendations[age][discomfort][goal][duration];
+            }
+            
+            // Fallback logic based on goal
+            if (goal === 'Релакс' || goal === 'Усунення хронічного болю') {
+                return defaultRecommendations['Класичний масаж'];
+            } else if (goal === 'Після тренування') {
+                return defaultRecommendations['Спортивний масаж'];
+            } else if (goal === 'Покращення фігури') {
+                return defaultRecommendations['Антицелюлітний масаж'];
+            } else if (goal === 'Зняття набряків') {
+                return defaultRecommendations['Лімфодренажний масаж'];
+            }
+            
+            // Default
+            return defaultRecommendations['Класичний масаж'];
+        }
+
+
+
+        function submitForm(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const phoneNumber = document.getElementById('phone').value;
+            const phone = '+380' + phoneNumber; // Add country code
+            const recommendation = getRecommendation();
+            
+            // Facebook Pixel - Lead with all answers
+            if (typeof fbq !== 'undefined') {
+                fbq('track', 'Lead', {
+                    content_name: recommendation.title,
+                    content_category: 'Quiz',
+                    value: recommendation.newPrice,
+                    currency: 'UAH',
+                    custom_parameters: {
+                        massage_type: recommendation.title,
+                        duration: recommendation.duration,
+                        old_price: recommendation.oldPrice,
+                        new_price: recommendation.newPrice,
+                        user_age: quizData.answers.question1,
+                        user_discomfort: quizData.answers.question2,
+                        user_goal: quizData.answers.question3,
+                        user_duration: quizData.answers.question4,
+                        all_answers: JSON.stringify(quizData.answers),
+                        lead_name: name,
+                        lead_phone: phone
+                    }
+                });
+            }
+            
+            // Send to Telegram
+            sendToTelegram({
+                name: name,
+                phone: phone,
+                massage: recommendation.title,
+                duration: recommendation.duration,
+                oldPrice: recommendation.oldPrice,
+                newPrice: recommendation.newPrice,
+                answers: quizData.answers
+            });
+            
+            // Show thank you screen
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('thank-you').classList.remove('hidden');
+        }
+
+        async function sendToTelegram(data) {
+            // Отримуємо токени з змінних середовища або використовуємо placeholder
+            const botToken = window.TELEGRAM_BOT_TOKEN || 'YOUR_BOT_TOKEN';
+            const chatId = window.TELEGRAM_CHAT_ID || 'YOUR_CHAT_ID';
+            
+            const message = `
+🆕 Новий лід з квізу масажу!
+
+👤 Ім'я: ${data.name}
+📞 Телефон: ${data.phone}
+
+💆‍♀️ Рекомендований масаж: ${data.massage}
+⏱ Тривалість: ${data.duration}
+💰 Ціна: ${data.oldPrice} → ${data.newPrice}
+
+📊 Відповіді клієнта:
+• Вік: ${data.answers.question1}
+• Дискомфорт: ${data.answers.question2}
+• Мета: ${data.answers.question3}
+• Тривалість: ${data.answers.question4}
+
+⏰ ${new Date().toLocaleString('uk-UA')}
+            `;
+            
+            try {
+                const response = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        chat_id: chatId,
+                        text: message,
+                        parse_mode: 'HTML'
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Помилка відправки в Telegram');
+                }
+                
+                console.log('Повідомлення відправлено в Telegram');
+            } catch (error) {
+                console.error('Помилка відправки в Telegram:', error);
+            }
+        }
+
+        // Format phone number input (only numbers)
+        document.addEventListener('DOMContentLoaded', function() {
+            const phoneInput = document.getElementById('phone');
+            if (phoneInput) {
+                phoneInput.addEventListener('input', function(e) {
+                    // Remove all non-numeric characters
+                    let value = e.target.value.replace(/\D/g, '');
+                    // Limit to 9 digits
+                    value = value.substring(0, 9);
+                    e.target.value = value;
+                });
+            }
+        });
+
+
+    </script>
+</body>
+</html>
