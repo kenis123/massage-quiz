@@ -368,9 +368,11 @@
                     <label for="phone" class="block text-gray-300 mb-2">Номер телефону</label>
                     <div class="relative">
                         <div class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 font-medium">+380</div>
-                        <input type="tel" id="phone" pattern="[0-9]{9}" required class="w-full bg-gray-700 border border-gray-600 rounded-lg py-3 pl-16 pr-4 text-white focus:outline-none focus:ring-2 focus:ring-primary" placeholder="XXXXXXXXX" maxlength="9">
+                        <input type="tel" id="phone" required class="w-full bg-gray-700 border border-gray-600 rounded-lg py-3 pl-16 pr-4 text-white focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Введіть номер телефону">
+                        <div id="phone-error" class="hidden text-red-400 text-sm mt-1"></div>
+                        <div id="phone-success" class="hidden text-green-400 text-sm mt-1">✓ Валідний номер</div>
                     </div>
-                    <p class="text-gray-500 text-sm mt-1">Введіть 9 цифр номера без коду країни</p>
+                    <p class="text-gray-500 text-sm mt-1">Введіть номер телефону (мінімум 9 цифр)</p>
                 </div>
                 
                 <button type="submit" class="w-full btn-primary text-white font-semibold py-3 px-6 rounded-full text-lg mb-4">
@@ -754,6 +756,12 @@
             
             const name = document.getElementById('name').value;
             const phoneNumber = document.getElementById('phone').value;
+            
+            // Валідація номера телефону
+            if (!validatePhoneNumber(phoneNumber)) {
+                return false;
+            }
+            
             const phone = '+380' + phoneNumber; // Add country code
             const recommendation = getRecommendation();
             
@@ -870,6 +878,72 @@
             }
         }
 
+        // Валідація номера телефону (спрощена)
+        function validatePhoneNumber(phoneNumber) {
+            // Перевірка мінімальної довжини
+            if (phoneNumber.length < 9) {
+                showPhoneError('Номер повинен містити мінімум 9 цифр');
+                return false;
+            }
+            
+            // Перевірка на тільки цифри
+            if (!/^\d+$/.test(phoneNumber)) {
+                showPhoneError('Номер повинен містити тільки цифри');
+                return false;
+            }
+            
+            // Базова перевірка на тестові номери (тільки для 9-значних)
+            if (phoneNumber.length === 9) {
+                const testNumbers = [
+                    '000000000', '111111111', '222222222', '333333333', '444444444',
+                    '555555555', '666666666', '777777777', '888888888', '999999999',
+                    '123456789', '987654321'
+                ];
+                
+                if (testNumbers.includes(phoneNumber)) {
+                    showPhoneError('Це схоже на тестовий номер');
+                    return false;
+                }
+            }
+            
+            // Якщо все пройшло - показуємо успіх
+            showPhoneSuccess();
+            return true;
+        }
+        
+        function showPhoneError(message) {
+            const errorDiv = document.getElementById('phone-error');
+            const successDiv = document.getElementById('phone-success');
+            const phoneInput = document.getElementById('phone');
+            
+            errorDiv.innerHTML = `<i class="fas fa-exclamation-triangle mr-1"></i>${message}`;
+            errorDiv.classList.remove('hidden');
+            successDiv.classList.add('hidden');
+            phoneInput.classList.add('border-red-500');
+            phoneInput.classList.remove('border-green-500');
+            
+            // Додаємо вібрацію для мобільних пристроїв
+            if (navigator.vibrate) {
+                navigator.vibrate(200);
+            }
+        }
+        
+        function showPhoneSuccess() {
+            const errorDiv = document.getElementById('phone-error');
+            const successDiv = document.getElementById('phone-success');
+            const phoneInput = document.getElementById('phone');
+            
+            errorDiv.classList.add('hidden');
+            successDiv.classList.remove('hidden');
+            phoneInput.classList.remove('border-red-500');
+            phoneInput.classList.add('border-green-500');
+            
+            // Додаємо легку вібрацію для підтвердження
+            if (navigator.vibrate) {
+                navigator.vibrate(100);
+            }
+        }
+        
         // Format phone number input (only numbers)
         document.addEventListener('DOMContentLoaded', function() {
             const phoneInput = document.getElementById('phone');
@@ -877,9 +951,24 @@
                 phoneInput.addEventListener('input', function(e) {
                     // Remove all non-numeric characters
                     let value = e.target.value.replace(/\D/g, '');
-                    // Limit to 9 digits
-                    value = value.substring(0, 9);
                     e.target.value = value;
+                    
+                    // Валідуємо при введенні
+                    if (value.length >= 9) {
+                        validatePhoneNumber(value);
+                    } else {
+                        // Сховати повідомлення якщо номер не повний
+                        document.getElementById('phone-error').classList.add('hidden');
+                        document.getElementById('phone-success').classList.add('hidden');
+                        phoneInput.classList.remove('border-red-500', 'border-green-500');
+                    }
+                });
+                
+                // Валідація при втраті фокусу
+                phoneInput.addEventListener('blur', function(e) {
+                    if (e.target.value.length >= 9) {
+                        validatePhoneNumber(e.target.value);
+                    }
                 });
             }
         });
